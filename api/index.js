@@ -13,6 +13,7 @@ console.log('Error connecting to MongoDB'+ err.message)
 })
 
 const app=express()
+app.use(express.json())
 
 
 app.listen(3000,()=>{
