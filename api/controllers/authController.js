@@ -1,10 +1,11 @@
 import User from '../models/userModel.js'
 import bcrypt from 'bcryptjs'
-export const signup= async(req,res)=>{
+import { errorHandler } from '../utils/error.js'
+export const signup= async(req,res,next)=>{
 const {username,email,password} = req.body
 if(!email || !password || !username)
 {
-    return res.status(400).json({error:'Please fill all the fields'})
+next(errorHandler(400,'Please fill all the fields'))
 }
 const hashedPassword= bcrypt.hashSync(password,10)
 const newUser= new User({
@@ -13,11 +14,14 @@ const newUser= new User({
     password:hashedPassword
 })
 try {
-    await newUser.save()
-    res.json({message:'Signup successful'}) 
+    await newUser.save();
+    res.json({ message: 'Signup successful' });  // Success response
 } catch (error) {
-   res.json(500).json({message:error.message})
+    console.error('Error saving user:', error);
+    res.status(500).json({ message: 'Internal server error' });  // Error response
+    next(error);
 }
+
 
 
 
