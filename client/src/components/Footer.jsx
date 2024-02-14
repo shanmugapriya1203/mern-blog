@@ -1,5 +1,5 @@
 import React from 'react';
-import { Footer, Icon } from 'flowbite-react'; // Importing Icon component
+import { Footer } from 'flowbite-react'; // Importing Icon component
 import { Link } from 'react-router-dom';
 
 const FooterCom = () => {
@@ -19,10 +19,10 @@ const FooterCom = () => {
             <Footer.Title title='Follow Us' />
             <Footer.LinkGroup>
               <Footer.Link to='https://github.com/yourgithubusername'>
-                <Icon name="fab fa-github" /> Github
+                Github
               </Footer.Link>
               <Footer.Link to='https://www.linkedin.com/in/yourlinkedinusername'>
-                <Icon name="fab fa-linkedin" /> LinkedIn
+              LinkedIn
               </Footer.Link>
             </Footer.LinkGroup>
           </div>

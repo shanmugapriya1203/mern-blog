@@ -47,7 +47,7 @@ const navigate=useNavigate()
     <div className='min-h-screen mt-20'>
       <div className='flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center'>
         {/* Left */}
-        <div className='flex-1'>
+        <div className='flex-1 pb-5'>
           <Link to='/' className='font-bold dark:text-white text-4xl'>
             <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>ByteBlogs</span>
           </Link>
