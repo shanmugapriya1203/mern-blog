@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Label, TextInput ,Spinner} from 'flowbite-react'; // Make sure you import these components correctly
 import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
 import {  useDispatch,useSelector } from 'react-redux';
+import OAuth from '../components/OAuth';
 const Signin = () => {
   const [formData, setFormData] = useState({});
   const {loading,error:errorMessage}=useSelector(state=>state.user)
@@ -71,6 +72,7 @@ const navigate=useNavigate()
                 'Sign In'
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className=''>
             <span>Dont Have an account ?</span>
