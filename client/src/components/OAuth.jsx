@@ -3,7 +3,11 @@ import React from 'react'
 import { AiFillGoogleCircle } from 'react-icons/ai'
 import {GoogleAuthProvider, getAuth, signInWithPopup} from 'firebase/auth'
 import { app } from '../firebase'
+import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
+import {  useDispatch,useSelector } from 'react-redux';
 const OAuth = () => {
+  const dispatch=useDispatch();
+  const navigate=useNavigate()
     const auth=getAuth(app)
     const handleGoogleClick = async()=>{
         
@@ -11,7 +15,24 @@ const OAuth = () => {
         provider.setCustomParameters({prompt:'select_account'})
         try {
             const resultFromGoogle= await signInWithPopup(auth,provider)
-            console.log(resultFromGoogle)
+           const res= await fetch('/api/auth/google',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+              name:resultFromGoogle.user.displayName,
+              email:resultFromGoogle.user.email,
+              photoURL:resultFromGoogle.user.photoURL,
+              
+            })
+           })
+           const data=await res.json()
+        if(res.status === 200) {
+          dispatch(signInSuccess(data))
+          navigate('/')
+        }
+       
         } catch (error) {
             console.error(error)
         }
