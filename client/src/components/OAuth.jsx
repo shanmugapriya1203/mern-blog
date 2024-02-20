@@ -1,55 +1,64 @@
-import { Button } from 'flowbite-react'
-import React from 'react'
-import { AiFillGoogleCircle } from 'react-icons/ai'
-import {GoogleAuthProvider, getAuth, signInWithPopup} from 'firebase/auth'
-import { app } from '../firebase'
-import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
-import {  useDispatch,useSelector } from 'react-redux';
+import React from 'react';
+import { Button } from 'flowbite-react';
+import { AiFillGoogleCircle } from 'react-icons/ai';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { app } from '../firebase';
+import { signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 const OAuth = () => {
-  const dispatch=useDispatch();
-  const navigate=useNavigate()
-    const auth=getAuth(app)
-    const handleGoogleClick = async()=>{
-        
-        const provider= new GoogleAuthProvider()
-        provider.setCustomParameters({prompt:'select_account'})
-        try {
-            const resultFromGoogle= await signInWithPopup(auth,provider)
-           const res= await fetch('/api/auth/google',{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({
-              name:resultFromGoogle.user.displayName,
-              email:resultFromGoogle.user.email,
-              photoURL:resultFromGoogle.user.photoURL,
-              
-            })
-           })
-           const data=await res.json()
-        if(res.status === 200) {
-          dispatch(signInSuccess(data))
-          navigate('/')
-        }
-       
-        } catch (error) {
-            console.error(error)
-        }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const auth = getAuth(app);
+
+  const handleGoogleClick = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    try {
+      const resultFromGoogle = await signInWithPopup(auth, provider);
+
+      // Check if the popup was canceled by the user
+      if (!resultFromGoogle || resultFromGoogle?.user === null) {
+        throw new Error('The authentication popup was canceled by the user.');
+      }
+
+      const { displayName, email, photoURL } = resultFromGoogle.user;
+
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: displayName,
+          email,
+          photoURL
+        })
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to authenticate with Google');
+      }
+
+      const data = await res.json();
+      dispatch(signInSuccess(data));
+      navigate('/');
+    } catch (error) {
+      console.error('Error during Google authentication:', error);
+      dispatch(signInFailure(error.message));
     }
+  };
+
   return (
     <div>
       <Button type='button' gradientDuoTone='pinkToOrange' outline onClick={handleGoogleClick}>
-<AiFillGoogleCircle className='w-6 h-6 mr-2'/>
-  
-
-Continue with google
+        <AiFillGoogleCircle className='w-6 h-6 mr-2' />
+        Continue with Google
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default OAuth
-
-
-
+export default OAuth;

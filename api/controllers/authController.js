@@ -1,5 +1,5 @@
 import User from '../models/userModel.js';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs'; 
 import jwt from 'jsonwebtoken';
 
 export const signup = async (req, res, next) => {
@@ -64,7 +64,7 @@ try {
     }
     else{
         const generatedPassword= Math.random().toString(36).slice(-8)
-        const hashedPassword= bcryptjs.hashSync(generatedPassword,10)
+        const hashedPassword= bcrypt.hashSync(generatedPassword,10)
         const newUser= new User({
             username:name.toLowerCase().split(' ').join(' ') + Math.random().toString(9).slice(-4),
 
@@ -81,6 +81,7 @@ try {
         }).json(rest)
     }
 } catch (error) {
-    
+    res.status(500).json({ message: 'Internal server error' });
 }
+
 }
