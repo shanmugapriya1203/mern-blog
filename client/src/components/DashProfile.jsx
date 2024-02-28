@@ -12,7 +12,7 @@ const DashProfile = () => {
     const [imageFileUrl, setImageFileUrl] = useState(null)
     const [imageFileUploadingProgress, setImageFileUploadingProgress] = useState(null)
     const [imageFileError, setImageFileError] = useState(null)
-    console.log(imageFileUploadingProgress,imageFileError)
+
     const FilePickRef = useRef()
 
     const handleImageChange = (e) => {
