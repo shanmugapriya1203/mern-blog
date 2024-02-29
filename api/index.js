@@ -5,7 +5,7 @@ import cors from 'cors';
 import userRoutes from './routes/userRoute.js';
 import authRoutes from './routes/authRoute.js';
 import bodyParser from 'body-parser';
-
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 mongoose.connect(process.env.MONGO)
@@ -22,6 +22,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
+
+app.use(cookieParser());
 
 app.listen(3000, () => {
     console.log('Server listening on port 3000');

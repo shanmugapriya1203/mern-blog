@@ -41,10 +41,10 @@ export const signin = async (req, res, next) => {
             { id: validUser._id },
             process.env.JWT_SECRET_KEY
         );
-        const { password, ...rest } = validUser._doc;
+        const { password: userPassword, ...rest } = validUser._doc;
         res.status(200).cookie('access_token', token, {
             httpOnly: true
-        }).json(rest);
+        }).json({ ...rest, token }); 
     } catch (error) {
         next(error);
     }
