@@ -50,7 +50,9 @@ const [formData, setFormData] = useState({})
             })
         })
     }
-   
+   const handleChange=async(e)=>{
+    setFormData({...formData,[e.target.id]:e.target.value})
+   }
 
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
@@ -87,9 +89,9 @@ const [formData, setFormData] = useState({})
 
                     <img src={imageFileUrl || currentUser.profilePicture} alt='user' className='rounded-full w-full h-full  object-cover border-8 border-[lightgray]' />
                 </div>
-                <TextInput type='text' id='username' placeholder='Username' defaultValue={currentUser.username} />
-                <TextInput type='email' id='email' placeholder='Email' defaultValue={currentUser.email}  />
-                <TextInput type='password' id='password' placeholder='******' />
+                <TextInput type='text' id='username' placeholder='Username' defaultValue={currentUser.username}  onChange={handleChange}/>
+                <TextInput type='email' id='email' placeholder='Email' defaultValue={currentUser.email} onChange={handleChange}/> 
+                <TextInput type='password' id='password' placeholder='******'  onChange={handleChange}/>
                 <Button type='submit' gradientDuoTone='purpleToBlue' outline>
                     Update
                 </Button>
