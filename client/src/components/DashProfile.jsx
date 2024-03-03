@@ -1,19 +1,22 @@
 import { Button, TextInput } from 'flowbite-react'
 import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from './../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { updateStart,updateSuccess,updateFailure } from '../redux/user/userSlice';
 
+import {  useDispatch,useSelector } from 'react-redux';
 const DashProfile = () => {
     const { currentUser } = useSelector((state) => state.user)
+
     const [imageFile, setImageFile] = useState(null)
     const [imageFileUrl, setImageFileUrl] = useState(null)
     const [imageFileUploadingProgress, setImageFileUploadingProgress] = useState(null)
     const [imageFileError, setImageFileError] = useState(null)
 const [formData, setFormData] = useState({})
     const FilePickRef = useRef()
+    const dispatch=useDispatch()
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]
@@ -52,6 +55,31 @@ const [formData, setFormData] = useState({})
     }
    const handleChange=async(e)=>{
     setFormData({...formData,[e.target.id]:e.target.value})
+   }
+   const handleSubmit=async(e)=>{
+    e.preventDefault()
+    if(Object.keys(formData).length ===0){
+        return;
+    }
+    try {
+        dispatch(updateStart())
+        const res= await fetch(`/api/user/update/${currentUser._id}`,{
+            method:'PUT',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(formData)
+        })
+        const data= await res.json()
+        if(!res.ok){
+            dispatch(updateFailure(data.message))
+        }
+        else{
+            dispatch(updateSuccess(data))
+        }
+    } catch (error) {
+        dispatch(updateFailure(error.message))
+    }
    }
 
     return (
