@@ -15,6 +15,8 @@ const DashProfile = () => {
     const [imageFileUploadingProgress, setImageFileUploadingProgress] = useState(null)
     const [imageFileError, setImageFileError] = useState(null)
 const [formData, setFormData] = useState({})
+const [imageFileUploading, setImageFileUploading] = useState(false)
+const[updateUserSuccess, setUpdateUserSuccess] = useState(null)	
     const FilePickRef = useRef()
     const dispatch=useDispatch()
 
@@ -33,6 +35,8 @@ const [formData, setFormData] = useState({})
     }, [imageFile])
 
     const uploadImage = async () => {
+        setImageFileUploading(true)
+        setImageFileError(null)
         const storage = getStorage(app);
         const fileName = new Date().getTime() + '-' + (imageFile.name || 'unnamed');
         const storageRef = ref(storage, fileName);
@@ -46,10 +50,12 @@ const [formData, setFormData] = useState({})
             setImageFileUploadingProgress(null)
             setImageFile(null)
             setImageFileUrl(null)
+            setImageFileUploading(false)
         }, () => {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 setImageFileUrl(downloadURL)
                 setFormData({...formData,profilePicture:downloadURL})
+                setImageFileUploading(false)
             })
         })
     }
@@ -60,6 +66,9 @@ const [formData, setFormData] = useState({})
     e.preventDefault()
     if(Object.keys(formData).length ===0){
         return;
+    }
+    if(imageFileUploading){
+    return ;
     }
     try {
         dispatch(updateStart())
@@ -76,6 +85,7 @@ const [formData, setFormData] = useState({})
         }
         else{
             dispatch(updateSuccess(data))
+            setUpdateUserSuccess("User updated successfully")
         }
     } catch (error) {
         dispatch(updateFailure(error.message))
@@ -128,6 +138,13 @@ const [formData, setFormData] = useState({})
                 <span className='cursor-pointer'>Delete Account</span>
                 <span className='cursor-pointer'>Sign Out</span>
             </div>
+            {
+                updateUserSuccess && (
+                    <Alert className=' mt-5' color='success'>
+                        {updateUserSuccess}
+                    </Alert>
+                )
+            }
         </div>
     )
 }
