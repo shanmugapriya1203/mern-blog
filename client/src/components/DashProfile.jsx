@@ -17,6 +17,7 @@ const DashProfile = () => {
 const [formData, setFormData] = useState({})
 const [imageFileUploading, setImageFileUploading] = useState(false)
 const[updateUserSuccess, setUpdateUserSuccess] = useState(null)	
+const[updateUserError, setUpdateUserError] = useState(null)
     const FilePickRef = useRef()
     const dispatch=useDispatch()
 
@@ -65,6 +66,7 @@ const[updateUserSuccess, setUpdateUserSuccess] = useState(null)
    const handleSubmit=async(e)=>{
     e.preventDefault()
     if(Object.keys(formData).length ===0){
+        setUpdateUserError('No change made to user')
         return;
     }
     if(imageFileUploading){
@@ -82,6 +84,7 @@ const[updateUserSuccess, setUpdateUserSuccess] = useState(null)
         const data= await res.json()
         if(!res.ok){
             dispatch(updateFailure(data.message))
+            setUpdateUserError(data.message)
         }
         else{
             dispatch(updateSuccess(data))
@@ -142,6 +145,13 @@ const[updateUserSuccess, setUpdateUserSuccess] = useState(null)
                 updateUserSuccess && (
                     <Alert className=' mt-5' color='success'>
                         {updateUserSuccess}
+                    </Alert>
+                )
+            }
+            {
+                updateUserError && (
+                    <Alert className=' mt-5' color='failure'>
+                        {updateUserError}
                     </Alert>
                 )
             }
