@@ -65,6 +65,8 @@ const[updateUserError, setUpdateUserError] = useState(null)
    }
    const handleSubmit=async(e)=>{
     e.preventDefault()
+    setUpdateUserError(null)
+    setUpdateUserSuccess(null)
     if(Object.keys(formData).length ===0){
         setUpdateUserError('No change made to user')
         return;
