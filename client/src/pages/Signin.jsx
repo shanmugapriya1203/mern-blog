@@ -4,6 +4,7 @@ import { Alert, Button, Label, TextInput ,Spinner} from 'flowbite-react'; // Mak
 import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
 import {  useDispatch,useSelector } from 'react-redux';
 import OAuth from '../components/OAuth';
+import Cookies from 'js-cookie';
 const Signin = () => {
   const [formData, setFormData] = useState({});
   const {loading,error:errorMessage}=useSelector(state=>state.user)
@@ -16,11 +17,13 @@ const navigate=useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
     if (!formData.password || !formData.email) {
-   return dispatch(signInFailure('Please fill all the fields'))
+      return dispatch(signInFailure('Please fill all the fields'));
     }
     try {
-     dispatch(signInStart())
+      dispatch(signInStart());
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -29,15 +32,20 @@ const navigate=useNavigate()
         body: JSON.stringify(formData)
       });
       const data = await res.json();
-      if (res.status !== 200) { // Check for a successful status code
-        dispatch(signInFailure(data.message))
+      if (res.status === 200) {
+       const token= data.access_token;
+       localStorage.setItem('token', token);
+       
+        dispatch(signInSuccess(data));
+        navigate('/dashboard'); // Redirect to dashboard after successful sign-in
+      } else {
+        dispatch(signInFailure(data.message));
       }
-      dispatch(signInSuccess(data))
-      navigate('/'); // Navigate only if the status code is 200
     } catch (error) {
-      dispatch(signInFailure(data.message))
-    } 
+      dispatch(signInFailure('An error occurred while signing in'));
+    }
   };
+  
   
 
   return (
