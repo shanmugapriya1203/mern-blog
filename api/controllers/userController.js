@@ -44,3 +44,15 @@ export const updateUser = async(req,res)=>{
             console.log(error)
         }
     }
+
+    export const deletUser = async(req, res) =>{
+        if(req.user.id !== req.params.userId){
+            return res.status(401).json({message:'You are not authorized to perform this action'})
+        }
+        try {
+            await User.findByIdAndDelete(req.params.userId)
+            res.status(200).json({message:'User deleted successfully'})
+        } catch (error) {
+            next(error)
+        }
+    }
