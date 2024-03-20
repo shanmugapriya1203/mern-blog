@@ -6,12 +6,12 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { app } from './../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateStart, updateSuccess, updateFailure } from '../redux/user/userSlice';
+import { updateStart, updateSuccess, updateFailure, deleteUserFailure, deleteUserStart ,deleteUserSuccess} from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import  {HiOutlineExclamationCircle} from 'react-icons/hi'
 
 const DashProfile = () => {
-    const { currentUser } = useSelector((state) => state.user);
+    const { currentUser ,error } = useSelector((state) => state.user);
     const [imageFile, setImageFile] = useState(null);
     const [imageFileUrl, setImageFileUrl] = useState(null);
     const [imageFileUploadingProgress, setImageFileUploadingProgress] = useState(null);
@@ -20,7 +20,7 @@ const DashProfile = () => {
     const [imageFileUploading, setImageFileUploading] = useState(false);
     const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
     const [updateUserError, setUpdateUserError] = useState(null);
-    const[showModal,setShowModal] = useState({})
+    const [showDeleteModal, setShowDeleteModal] = useState(false); 
     const FilePickRef = useRef();
     const dispatch = useDispatch();
 
@@ -81,7 +81,7 @@ const DashProfile = () => {
         }
         try {
           dispatch(updateStart());
-         const token= localStorage.getItem("token")// Set the token in localStorage
+         const token= localStorage.getItem("token")
           const headers = {
             'Content-Type': 'application/json',
         
@@ -108,6 +108,35 @@ const DashProfile = () => {
         }
       };
       const handleDeleteAccount= async ()=> {
+        setShowDeleteModal(true);
+        try{
+      dispatch(deleteUserStart())
+      const token= localStorage.getItem("token")
+      const headers = {
+        'Content-Type': 'application/json',
+    
+      };
+      if(token){
+        headers['Authorization'] = token
+      }
+      const res= await fetch(`/api/user/delete/${currentUser._id}`,{
+        method: 'DELETE',
+        headers:headers
+      })
+      const data= await res.json()
+      if(!res.ok){
+        dispatch(deleteUserFailure(data.message))
+      }
+      else{
+        dispatch(deleteUserSuccess(data))
+        localStorage.removeItem('token')
+        navigate('/')
+      }
+
+        }
+        catch(error){
+            dispatch(deleteUserFailure(error.message))
+        }
       }
       
     return (
@@ -152,7 +181,7 @@ const DashProfile = () => {
                 </Button>
             </form>
             <div className='text-red-500 flex justify-between mt-5'>
-                <span onClick={()=>setShowModal(true)} className='cursor-pointer'>Delete Account</span>
+                <span onClick={()=>setShowDeleteModal(true)} className='cursor-pointer'>Delete Account</span>
                 <span className='cursor-pointer'>Sign Out</span>
             </div>
             {
@@ -169,7 +198,14 @@ const DashProfile = () => {
                     </Alert>
                 )
             }
-            <Modal show={showModal} onClose={()=>setShowModal(false)} popup size='md'>
+              {
+                error && (
+                    <Alert className=' mt-5' color='failure'>
+                        {error}
+                    </Alert>
+                )
+            }
+           <Modal show={showDeleteModal} onClose={()=>setShowDeleteModal(false)} popup size='md'>
                 <Modal.Header />
                 <Modal.Body>
                     <div className='text-center'>
@@ -177,7 +213,7 @@ const DashProfile = () => {
                         <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400 '>Are you sure you want to delete account ?</h3>
                         <div className='flex justify-center gap-4'>
                             <Button color='failure' onClick={handleDeleteAccount}>Delete</Button>
-                            <Button color='gray' onClick={()=>setShowModal(false)}>Cancel</Button>
+                            <Button color='gray' onClick={()=>setShowDeleteModal(false)}>Cancel</Button>
                         </div>
                     </div>
                 </Modal.Body>
