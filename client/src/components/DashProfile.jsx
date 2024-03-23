@@ -6,9 +6,10 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { app } from './../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { updateStart, updateSuccess, updateFailure, deleteUserFailure, deleteUserStart ,deleteUserSuccess} from '../redux/user/userSlice';
+import { updateStart, updateSuccess, updateFailure, deleteUserFailure, deleteUserStart ,deleteUserSuccess,signoutSuccess} from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import  {HiOutlineExclamationCircle} from 'react-icons/hi'
+import { useNavigate } from 'react-router-dom';
 
 const DashProfile = () => {
     const { currentUser ,error } = useSelector((state) => state.user);
@@ -23,6 +24,7 @@ const DashProfile = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false); 
     const FilePickRef = useRef();
     const dispatch = useDispatch();
+    const navigate= useNavigate()
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -138,7 +140,25 @@ const DashProfile = () => {
             dispatch(deleteUserFailure(error.message))
         }
       }
-      
+      const handleSignout = async () => {
+        try {
+            const res = await fetch('/api/user/signout', {
+                method: 'POST',
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                console.log('Error:', data.message); // Log error message if request fails
+            } else {
+                console.log('Sign-out successful:', data); // Log success message if sign-out is successful
+                dispatch(signoutSuccess(data));
+                // Ensure that 'navigate' function is defined and imported properly
+                 navigate('/');
+            }
+        } catch (error) {
+            console.error('Error:', error); // Log any unexpected errors
+        }
+    }
+    
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
             <h1 className='my-7 text-center font-semibold text-3xl'>profile</h1>
@@ -182,7 +202,7 @@ const DashProfile = () => {
             </form>
             <div className='text-red-500 flex justify-between mt-5'>
                 <span onClick={()=>setShowDeleteModal(true)} className='cursor-pointer'>Delete Account</span>
-                <span className='cursor-pointer'>Sign Out</span>
+                <span className='cursor-pointer'onClick={handleSignout} >Sign Out</span>
             </div>
             {
                 updateUserSuccess && (
