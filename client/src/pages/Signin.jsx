@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Alert, Button, Label, TextInput ,Spinner} from 'flowbite-react'; // Make sure you import these components correctly
-import { signInStart,signInSuccess,signInFailure } from '../redux/user/userSlice';
-import {  useDispatch,useSelector } from 'react-redux';
+import { Alert, Button, Label, TextInput ,Spinner} from 'flowbite-react';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import OAuth from '../components/OAuth';
 import Cookies from 'js-cookie';
+
 const Signin = () => {
   const [formData, setFormData] = useState({});
-  const {loading,error:errorMessage}=useSelector(state=>state.user)
-  const dispatch=useDispatch();
-const navigate=useNavigate()
+  const { loading, error: errorMessage } = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -17,8 +18,8 @@ const navigate=useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setUpdateUserError(null);
-    setUpdateUserSuccess(null);
+    // Remove the following line as setUpdateUserError is not defined
+    // setUpdateUserError(null);
     if (!formData.password || !formData.email) {
       return dispatch(signInFailure('Please fill all the fields'));
     }
@@ -33,9 +34,8 @@ const navigate=useNavigate()
       });
       const data = await res.json();
       if (res.status === 200) {
-       const token= data.access_token;
-       localStorage.setItem('token', token);
-       
+        const token = data.access_token;
+        localStorage.setItem('token', token);
         dispatch(signInSuccess(data));
         navigate('/dashboard'); // Redirect to dashboard after successful sign-in
       } else {
@@ -45,8 +45,6 @@ const navigate=useNavigate()
       dispatch(signInFailure('An error occurred while signing in'));
     }
   };
-  
-  
 
   return (
     <div className='min-h-screen mt-20'>
@@ -61,7 +59,6 @@ const navigate=useNavigate()
         {/* Right */}
         <div className='flex-1'>
           <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-         
             <div className=''>
               <Label value='Your email' />
               <TextInput type='email' placeholder='name@email.com' id='email' onChange={handleChange} />
