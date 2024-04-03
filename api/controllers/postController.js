@@ -62,6 +62,25 @@ res.status(200).json({
     next(error)
 }
 }
+export const updatePost=async (req, res, next) => {
+    if(!req.user.isAdmin && req.user.id !== req.query.userId){
+        return res.status(401).json({message:'You are not authorized to perform this action'})
+    }
+    try {
+        const updatedPost= await Post.findByIdAndUpdate(req.params.postId,{
+            $set:{
+                title:req.body.title,
+                content:req.body.content,
+                image:req.body.image,
+                category:req.body.category,
+                
+            }
+        },{new:true})
+        res.status(200).json({message:'Post updated successfully',post:updatedPost})
+    } catch (error) {
+        next(error)
+    }
+}
 
 export const deletePost=async(req,res,next)=>{
     if(!req.user.isAdmin && req.user.id !== req.query.userId){
