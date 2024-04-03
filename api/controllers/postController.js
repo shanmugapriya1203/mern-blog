@@ -62,3 +62,15 @@ res.status(200).json({
     next(error)
 }
 }
+
+export const deletePost=async(req,res,next)=>{
+    if(!req.user.isAdmin && req.user.id !== req.query.userId){
+        return res.status(401).json({message:'You are not authorized to perform this action'})
+    }
+    try {
+        await Post.findByIdAndDelete(req.body.postId)
+        res.status(200).json({message:'Post deleted successfully'})
+    } catch (error) {
+        next(error)
+    }
+}

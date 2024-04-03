@@ -114,6 +114,7 @@ const DashProfile = () => {
         try{
       dispatch(deleteUserStart())
       const token= localStorage.getItem("token")
+      console.log(token)
       const headers = {
         'Content-Type': 'application/json',
     
@@ -123,7 +124,7 @@ const DashProfile = () => {
       }
       const res= await fetch(`/api/user/delete/${currentUser._id}`,{
         method: 'DELETE',
-        headers:headers
+        
       })
       const data= await res.json()
       if(!res.ok){
