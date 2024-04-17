@@ -8,6 +8,24 @@ function CommentSection({postId}) {
     const [comment, setComment] = useState('');
     const [commentError, setCommentError] = useState(null);
     const [comments, setComments] = useState([]);
+console.log(comments)
+    useEffect(()=>{
+      const getComments= async()=>{
+        try {
+          const res= await fetch(`/api/comment/getPostComments/${postId}`)
+          if(res.ok){
+            const data= await res.json()
+            setComments(data)
+          }
+        } catch (error) {
+          console.log(error.message)
+        }
+      }
+      getComments()
+
+    },[postId])
+
+
     const handleSubmit= async(e)=>{
 e.preventDefault()
 if(comment.length >200){
@@ -93,7 +111,7 @@ try {
             </form>
         )
       }
-      
+    
     </div>
   )
 }
