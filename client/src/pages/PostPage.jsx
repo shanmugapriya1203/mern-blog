@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Spinner } from 'flowbite-react';
 import { useParams,Link } from 'react-router-dom'
+import CommentSection from '../components/CommentSection';
 export default function PostPage() {
     const {postSlug}=useParams()
     const [loading,setLoading]=useState(true)
@@ -66,6 +67,8 @@ fetchPost()
         className='p-3 max-w-2xl mx-auto w-full post-content'
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
+  <CommentSection postId={post && post._id} />
+
         </main>
   )
 }
