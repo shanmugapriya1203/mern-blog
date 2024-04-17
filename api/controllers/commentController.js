@@ -1,5 +1,5 @@
-import Comment from "../models/commentModel";
-import { bodyParser } from 'body-parser';
+import Comment from "../models/commentModel.js";
+
 
 export const createComment=async(req,res,next)=>{
     try {
