@@ -27,6 +27,8 @@ const postSchema=new mongoose.Schema({
     required: true,
     unique: true
    },
+   username: String, 
+   profilePicture: String, 
 
   
 },{timestamps:true})
