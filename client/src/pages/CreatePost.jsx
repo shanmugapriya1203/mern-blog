@@ -8,9 +8,10 @@ import { app } from './../firebase';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
 const CreatePost = () => {
-    const naviagte=useNavigate()
+  const { currentUser } = useSelector((state) => state.user);
+    const navigate=useNavigate()
     const[file,setFile]=useState(null)
     const[imageUploadProgress,setImageUploadProgress]=useState(null)
     const [imageUploadError, setImageUploadError] = useState(null);
@@ -57,40 +58,47 @@ const CreatePost = () => {
     console.log(error)
  }
     }
-    const handleQuellSubmit=async(e)=>{
-        e.preventDefault()
-        try {
-            const token= localStorage.getItem("token")
-      const headers = {
-        'Content-Type': 'application/json',
-    
-      };
-      if(token){
-        headers['Authorization'] = token
+    const handleQuellSubmit = async (e) => {
+      e.preventDefault();
+      try {
+          const token = localStorage.getItem("token");
+          const headers = {
+              'Content-Type': 'application/json',
+          };
+          if (token) {
+              headers['Authorization'] = `Bearer ${token}`;
+          }
+          const postData = {
+              ...formData,
+              username: currentUser.username,
+              profilePicture: currentUser.profilePicture,
+          };
+
+          const res = await fetch('/api/post/create', {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify(postData),
+          });
+
+          const data = await res.json();
+          if (!res.ok) {
+              setPublishError(data.message);
+              return;
+          }
+          if (res.ok) {
+              setPublishError(null);
+              setFormData({
+                  title: '',
+                  content: '',
+                  image: '',
+              });
+              navigate(`/post/${data.slug}`);
+          }
+      } catch (error) {
+          setPublishError('Something went wrong');
       }
-            const res= await fetch('/api/post/create',{
-                method:'POST',
-                headers:headers,
-                body:JSON.stringify(formData)
-            })
-            const data= await res.json()
-            if(!res.ok){
-                setPublishError(data.message)
-                return
-            }
-if(res.ok){
-    setPublishError(null);
-    setFormData({
-        title:'',
-        content:'',
-        image:''
-    })
-    naviagte(`/post/${data.slug}`)
-}
-        } catch (error) {
-            setPublishError('Something went wrong')
-        }
-    }
+  };
+  
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-semibold'>Create a Post</h1>
