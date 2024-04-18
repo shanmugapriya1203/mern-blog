@@ -19,7 +19,6 @@ const OAuth = () => {
     try {
       const resultFromGoogle = await signInWithPopup(auth, provider);
 
-      // Check if the popup was canceled by the user
       if (!resultFromGoogle || resultFromGoogle?.user === null) {
         throw new Error('The authentication popup was canceled by the user.');
       }
@@ -53,9 +52,8 @@ const OAuth = () => {
 
   return (
     <div>
-      <Button type='button' gradientDuoTone='pinkToOrange' outline onClick={handleGoogleClick}>
-        <AiFillGoogleCircle className='w-6 h-6 mr-2' />
-        Continue with Google
+      <Button type='button' outline onClick={handleGoogleClick}>
+      <AiFillGoogleCircle className='w-8 h-8 mr-2 text-red-600' />
       </Button>
     </div>
   );
