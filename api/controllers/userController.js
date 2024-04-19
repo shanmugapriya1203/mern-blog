@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/userModel.js';
+import { errorHandler } from './../utils/error.js';
 
 export const test = (req, res) => {
     res.json({ success: 'Api is working', message: 'Test is working' });
@@ -105,3 +106,15 @@ export const getUsers = async (req, res, next) => {
         next(error);
     }
 };
+export const getUser= async(req,res,next)=>{
+    try {
+        const user= await User.findById(req.params.userId)
+        if(!user){
+            return next(errorHandler(404,'User not found'))
+        }
+        const {password,...rest}=user._doc;
+        res.status(200).json(rest)
+    } catch (error) {
+        
+    }
+}
