@@ -3,12 +3,14 @@ import { useSelector } from 'react-redux'
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Modal, TextInput, Textarea } from 'flowbite-react';
+import Comment from './Comment';
 function CommentSection({postId}) {
     const {currentUser}= useSelector((state)=>state.user)
     const [comment, setComment] = useState('');
     const [commentError, setCommentError] = useState(null);
     const [comments, setComments] = useState([]);
-console.log(comments)
+    const [showModal, setShowModal] = useState(false);
+
     useEffect(()=>{
       const getComments= async()=>{
         try {
@@ -31,12 +33,18 @@ e.preventDefault()
 if(comment.length >200){
     return
 }
+const token= localStorage.getItem("token")
+const headers = {
+  'Content-Type': 'application/json',
+
+};
+if(token){
+  headers['Authorization'] = token
+}
 try {
     const res= await fetch('/api/comment/create',{
   method:'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+ headers:headers,
   body: JSON.stringify({
     content:comment,
     postId,
@@ -54,6 +62,13 @@ try {
   setCommentError(error.message);
 }
     }
+
+    const handleLike=async()=>{
+
+    }
+    const handleEdit=async()=>{
+    }
+   
   return (
     <div>
         {
@@ -111,7 +126,35 @@ try {
             </form>
         )
       }
-    
+    {
+      comments.length === 0 ? (
+        <p  className='text-sm my-5'> No comments yet</p>
+      ) : (
+        <>
+           <div className='text-sm my-5 flex items-center gap-1'>
+            <p>Comments</p>
+            <div className='border border-gray-400 py-1 px-2 rounded-sm'>
+              <p>{comments.length}</p>
+            </div>
+          </div>
+          {
+            comments.map((comment)=>(
+              <Comment 
+              key={comment._id}
+              comment={comment}
+              onlike={handleLike}
+              onEdit={handleEdit}
+              onDelete={(commentId)=>{
+                setShowModal(trur)
+
+              }}
+              />
+            ))
+          }
+
+        </>
+      )
+    }
     </div>
   )
 }
