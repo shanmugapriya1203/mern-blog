@@ -10,7 +10,7 @@ function CommentSection({postId}) {
     const [commentError, setCommentError] = useState(null);
     const [comments, setComments] = useState([]);
     const [showModal, setShowModal] = useState(false);
-
+const navigate=useNavigate()
     useEffect(()=>{
       const getComments= async()=>{
         try {
@@ -63,8 +63,33 @@ try {
 }
     }
 
-    const handleLike=async()=>{
+    const handleLike=async(commentId)=>{
+try {
+  if(!currentUser){
+    navigate('/signin')
+  }
+  const res= await fetch(`/api/comment/likecomment/${commentId}`,{
+    method:'PUT',
 
+  })
+  if(res.ok){
+    const data= await res.json()
+    setComments(
+      comments.map((comment) =>
+        comment._id === commentId
+          ? {
+              ...comment,
+              likes: data.likes,
+              numberOfLikes: data.likes.length,
+            }
+          : comment
+      )
+    );
+  }
+
+} catch (error) {
+  console.log(error.message)
+}
     }
     const handleEdit=async()=>{
     }
@@ -142,7 +167,7 @@ try {
               <Comment 
               key={comment._id}
               comment={comment}
-              onlike={handleLike}
+              onLike={handleLike}
               onEdit={handleEdit}
               onDelete={(commentId)=>{
                 setShowModal(trur)
