@@ -7,9 +7,10 @@ const FooterCom = () => {
     <Footer container className='border border-t-8'>
       <div className=''>
       <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
-        <span className="text-indigo-950 font-bold uppercase"  style={{ fontFamily: "'Roboto', sans-serif" }}>Byte&nbsp;Blog</span>
-
-        </Link>
+  <div style={{ fontFamily: "'Roboto', sans-serif", backgroundImage: 'linear-gradient(to right, purple, blue)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+    Byte&nbsp;Blog
+  </div>
+</Link>
         <div className='grid grid-cols-2 gap-3 sm:mt-4 sm:grid-cols-3 sm:gap-6'>
           <Footer.Title title='About' />
           <Footer.LinkGroup col>

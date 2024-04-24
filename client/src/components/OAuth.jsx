@@ -52,8 +52,9 @@ const OAuth = () => {
 
   return (
     <div>
-      <Button type='button' outline onClick={handleGoogleClick}>
-      <AiFillGoogleCircle className='w-8 h-8 mr-2 text-red-600' />
+      <Button type='button' outline onClick={handleGoogleClick} className="google-button">
+        <AiFillGoogleCircle className='w-8 h-8 mr-2 text-red-600' style={{ fontSize: '24px' }} />
+        Sign in with Google
       </Button>
     </div>
   );

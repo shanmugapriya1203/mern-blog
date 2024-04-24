@@ -38,3 +38,8 @@ body{
   .dark .post-content a {
     color: red;
   }
+  .google-button:hover {
+    background-color: transparent !important;
+    color: inherit !important;
+  }
+  

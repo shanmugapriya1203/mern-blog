@@ -32,10 +32,11 @@ const Header = () => {
 }
   return (
     <Navbar className='border-b-2'>
-        <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
-        <span className="text-indigo-950 font-bold uppercase"  style={{ fontFamily: "'Roboto', sans-serif" }}>Byte&nbsp;Blog</span>
-
-        </Link>
+     <Link to='/' className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
+  <div style={{ fontFamily: "'Roboto', sans-serif", backgroundImage: 'linear-gradient(to right, purple, blue)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+    Byte&nbsp;Blog
+  </div>
+</Link>
         <form>
           <TextInput type='text' placeholder='Search...'  rightIcon={AiOutlineSearch}  className='hidden lg:inline' />
           </form>
