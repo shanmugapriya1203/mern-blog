@@ -91,9 +91,28 @@ try {
   console.log(error.message)
 }
     }
-    const handleEdit=async()=>{
-    }
-   
+    const handleEdit = async (commentId, editedContent) => {
+      try {
+        const res = await fetch(`/api/comment/editcomment/${commentId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            content: editedContent,
+          }),
+        });
+        if (res.ok) {
+          const updatedComments = comments.map((c) =>
+            c._id === commentId ? { ...c, content: editedContent } : c
+          );
+          setComments(updatedComments);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    
   return (
     <div>
         {

@@ -4,7 +4,6 @@ import { useEffect } from 'react'
 import { FaThumbsUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { Button, Textarea } from 'flowbite-react';
-import { set } from 'mongoose';
 const Comment = ({comment,onLike, onEdit, onDelete}) => {
     const[user,setUser]=useState({})
     const [isEditing, setIsEditing] = useState(false);
@@ -30,9 +29,27 @@ const Comment = ({comment,onLike, onEdit, onDelete}) => {
         setEditedContent(comment.content);
       };
     
-    const handleSave=()=>{
-
-    }
+      const handleSave = async () => {
+        try {
+          const res = await fetch(`/api/comment/editcomment/${comment._id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              content: editedContent,
+            }),
+          });
+          if (res.ok) {
+            setIsEditing(false);
+            // Call the handleEdit function passed from the CommentSection component
+            onEdit(comment._id, editedContent);
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      };
+      
   return (
     <div className='flex p-4 border-b dark:border-gray-600 text-sm'>
     <div className='flex-shrink-0 mr-3'>
