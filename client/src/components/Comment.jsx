@@ -42,7 +42,7 @@ const Comment = ({comment,onLike, onEdit, onDelete}) => {
           });
           if (res.ok) {
             setIsEditing(false);
-            // Call the handleEdit function passed from the CommentSection component
+   
             onEdit(comment._id, editedContent);
           }
         } catch (error) {
