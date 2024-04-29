@@ -158,7 +158,7 @@ import Comment from './Comment';
             {currentUser && (
                 <form
                     onSubmit={handleSubmit}
-                    className='border border-teal-500 rounded-md p-3'
+                    className='border border-purple-500 rounded-md p-3'
                 >
                     <Textarea
                         placeholder='Add a comment...'
